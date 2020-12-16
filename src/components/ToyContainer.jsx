@@ -25,7 +25,8 @@ class ToyContainer extends Component {
         <ToyCard 
           key={toy.id} 
           toy={toy}
-          // deleteToy={this.props.deleteToy} 
+          deleteToy={this.props.deleteToy}
+          updateToyLikes={this.props.updateToyLikes} 
         />
       ))}
       </div>

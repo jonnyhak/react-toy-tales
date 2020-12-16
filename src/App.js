@@ -25,6 +25,7 @@ class App extends React.Component{
         return response.json()
       })
       .then(toysArr => {
+
         this.setState({
           toys: toysArr
         })
@@ -48,24 +49,49 @@ class App extends React.Component{
       })
       .then(toyObj => {
         // console.log(toyObj)
-        this.setState({ todos: [...this.state.toys, toyObj]})
+        this.setState({ toys: [...this.state.toys, toyObj]})
       })
       .catch(console.log)
   }
 
-  // deleteToy = (id) => {
-  //   fetch(`http://localhost:3000/toys/${id}`, {
-  //     method: "DELETE"
-  //   })
-  //     .then(response => {
-  //       return response.json()
-  //     })
-  //     .then( res => 
-  //       this.setState({ toys: [...this.state.toys.filter (toy => 
-  //         toy.id !== id )]
-  //       })
-  //     )
-  // }
+  deleteToy = (id) => {
+    // console.log("working?")
+    fetch(`http://localhost:3000/toys/${id}`, {
+      method: "DELETE"
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then( res => 
+        this.setState({ toys: [...this.state.toys.filter (toy => 
+          toy.id !== id )]
+        })
+      )
+  }
+
+  updateToyLikes = (toyId, toyLikes) => {
+    // console.log(this.state.toys[3 - 1].likes)
+    fetch(`http://localhost:3000/toys/${toyId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accepts": "application/json"
+      },
+      body: JSON.stringify({
+        likes: toyLikes + 1 
+      })
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(updatedToyObj => {
+        let toysArr = [...this.state.toys]
+        let idx = toysArr.findIndex(toy => toy.id === updatedToyObj.id)
+        toysArr[idx] = updatedToyObj
+        this.setState({ toys: toysArr })
+      })
+      .catch(console.log)
+  }
 
   render(){
     return (
@@ -82,7 +108,8 @@ class App extends React.Component{
         </div>
         <ToyContainer 
           toys={this.state.toys}
-          // deleteToy={this.deleteToy}
+          deleteToy={this.deleteToy}
+          updateToyLikes={this.updateToyLikes}
         />
       </>
     );
